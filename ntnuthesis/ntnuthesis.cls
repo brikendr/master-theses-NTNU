@@ -723,9 +723,9 @@ Use $\backslash$setthesisyear\{<year>\} to set year.
 		
 		Supervisor 1: \thesis@supervisor 
 		
-		Supervisor 2: \thesis@supervisorA
+		%Supervisor 2: \thesis@supervisorA
 
-		Supervisor 3: \thesis@supervisorB
+		%Supervisor 3: \thesis@supervisorB
 		
   \end{titlepage}
 

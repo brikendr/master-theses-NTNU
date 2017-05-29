@@ -1,0 +1,20 @@
+\subsection{Named Entity Recognition (\ac{ner}) Service}
+\label{framework:architecture_NER}
+The disambiguation process is initiated by uploading a raw text document through the admin panel which issues an API call to the data store service. The data store service persists the content of the document into the database and proceeds by publishing a \textit{named entity recognition} message which in turn is subscribed by the NER microservice. The published message contains all the textual content of the uploaded document. As can be seen in Figure \ref{fig:workflow}, the NER microservice starts by tokenizing the textual content of the document. A NodeJS implementation of a tokenizer has been used for this purpose \footnote{See Node Tokenizer \url{https://www.npmjs.com/package/tokenize-text}}. The tokenization process converts the text content into an array of words, sentences, characters or any other desired way. We use the tokenizer to split up sentences and individual words. 
+
+The whole named entity recognition procedure has been inspired by \cite{39}, as they achieve very high levels of accuracy and significantly outperform state-of-the-art named entity recognizers. However, the implementation of the \ac{ner} service by Chabchoub et al. \cite{39} was carried out as part of the OKE Challenge 2016 and we were not able to find any open source code that could be integrated into our framework. Based on the information the authors provide in their publication, an attempted was made to reproduce the algorithms used in the recognition module in order to achieve similar performance levels as reported in their publication \cite{39}.
+
+Stanford \ac{ner} \cite{standfordNER} has been used as a named entity recognizer in combination with Dbpedia Spotlight \cite{dbpedia} as a semantic annotator. Both (as external services) recognize the entities in the textual content and return a list of all the recognized entities. When comparing the results of each service, entity overlapping was observed. To be able to solve this, a selection algorithm is implemented in order to select the best entity out of both lists. The logic of the selection algorithm is keeping the longest mention and dismissing the short one. Lets take an illustrative example from the sentence below: 
+
+\begin{quote}
+\textit{"The State University of New York at Cortland celebrated its 149th anniversary this year."}
+\end{quote}
+
+In this example, Spotlight annotates \textit{State University} and \textit{New York}
+ separately, whereas Stanford NER recognizes it as a single entity, namely, \textit{State University of New York}. The mention selection algorithm makes sure that the former is discarded and the later is kept. 
+ 
+ However, even after the mention selection algorithm, it is not guaranteed that the correct entities have been identified. From the example sentence, in fact, the correct entity mention is \textit{State University of New York at Cortland}. In order to achieve this, the mention merging algorithm is performed. As explained by \cite{39}, given two named entities in close proximity, the algorithm will try to expand it to cover the next entity mention. The constraints checked by the algorithm to permit the expansion (avoiding pitfalls such as merging two legitimate different entities) have been described in detail by Chabchoub et al. \cite{39}. 
+ 
+ The last step, before the entities are persisted into the database, consists of applying the mention filtering algorithm to the list of identified entities. The mention filtering algorithm uses a standard Part-of-Speech tagger for getting linguistic information for each entity. Accordingly, all entities that contain verbs are removed from the list, thus, filtering out incorrectly recognized entities \cite{39}. 
+ 
+ The final result of the \ac{ner} micro-service contains a list of \textit{selected}, \textit{merged} and \textit{filtered} entities. The \ac{ner} service finalizes its process by publishing a \textit{named entity persist} message which is subscribed by the data store service that does the actual persisting of the entities into the MySQL database.

@@ -1,0 +1,17 @@
+\section{Framework Architecture}
+\label{framework:architecture}
+The implemented NED Framework provides the fundamental tools and techniques on top of which a gamified system was implemented. Our ultimate goal is to demonstrate that games which are based on theoretical models and design principles can prove to be efficient in gathering qualitative annotations with minimal costs while still maintaining a large user base. Since the framework is composed of many different modules which carry various processing task and are independent from each other, an architectural model that adheres to these principles has been followed during the implementation. In other words, a micro-service architectural model has been utilized for the implementation of our framework. This section describes thoroughly all the different components composing the framework and the communication infrastructure used to exchange information between each-other. 
+
+\input{framework/architecture/microservice-model}
+
+\newpage 
+\input{framework/architecture/ner-service}
+
+\input{framework/architecture/context-service}
+
+\input{framework/architecture/candidate-service}
+
+\input{framework/architecture/datastore-prep-service}
+
+\newpage
+\input{framework/architecture/interface}

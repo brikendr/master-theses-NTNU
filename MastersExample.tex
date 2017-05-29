@@ -6,16 +6,23 @@
 %% b5paper with oneside or twoside, you can set A4 if you want but you submit in b5
 
 %% If you want print with the heading material on a4 paper you can use this format
-%% \documentclass[MACS,english,a4paper,oneside,12pt]{ntnuthesis/ntnuthesis}
+\documentclass[MACS,english,a4paper,oneside,12pt]{ntnuthesis/ntnuthesis}
 
 %% with the change to using DAIM we have a new option.
-\documentclass[MACS,english,DAIM]{ntnuthesis/ntnuthesis}
+%% \documentclass[MACS,english,DAIM]{ntnuthesis/ntnuthesis}
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}     % For utf8 encoded .tex files allows norwegian characters in the files. This can be dangerous if you change to a differnt editor.
 %\usepackage[pdftex]{graphicx, hyperref}   % For cross references in pdf
 \usepackage{graphicx}
+\usepackage[lofdepth,lotdepth]{subfig}
 \usepackage{hyperref}   % For cross references in pdf
+\usepackage{csquotes}
+\usepackage{booktabs}
+\usepackage{bigstrut}
+%\usepackage{subcaption}
+\usepackage{pdfpages}
+\usepackage{acro}
 
 
 \usepackage{color}              % For colouring text 
@@ -40,6 +47,8 @@
 }
 
 
+%Include Abbreviations
+\input{abbreviations}
 
 \begin{document}
 
@@ -51,16 +60,20 @@
 
 \hypersetup{pageanchor=true}
 
-% Comment with a percent to remove figures or tables:
 \listoffigures
 \listoftables
+\newpage
+\printacronyms[include-classes=abbrev,name=Abbreviations]
 
-
-\include{introduction} % includes latex files from the same directory
-\include{packages} % could be called Methodology or methods or anyfile name 
-\include{structure} % could be results
-
+%START OF CHAPTER 
+\include{introduction/introduction_chapter}
+\include{background/background_chapter}
+\include{framework/annotateme_chapter}
+\include{game/game_chapter}
+\include{discussions/discussions_chapter}
 \include{conclusion}
+%END OF CHAPTER IMPORT
+
 
 \ifthenelse{\boolean{HarvardCitations}}{%
 	\bibliographystyle{agsm} % used for Harvard style references. Names - Humanities & Interaction Design
@@ -68,8 +81,10 @@
 	\bibliographystyle{ntnuthesis/ntnuthesis} %used for Vancover style references. Numbers - Computer Science & Physics
 }
 
+%Bibliography
 \bibliography{MastersExample}
 
+%Appendices
 \appendix
 \include{appendix}
 
